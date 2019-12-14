@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Post } from '../post.model';
-import { NgForm } from '@angular/forms'
+import { NgForm } from '@angular/forms';
 import { PostsService } from '../posts.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class PostCreateComponent {
   enteredContent = '';
   postsService: PostsService;
 
-  constructor(postsService: PostsService){
+  constructor(postsService: PostsService) {
     this.postsService = postsService;
   }
 
@@ -28,5 +28,6 @@ export class PostCreateComponent {
       content: form.value.content
     };
     this.postsService.addPosts(post);
+    form.resetForm();
   }
 }

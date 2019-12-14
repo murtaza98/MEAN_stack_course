@@ -1,4 +1,4 @@
-import { Post } from './post.model'
+import { Post } from './post.model';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
@@ -16,7 +16,7 @@ export class PostsService {
     this.postUpdated.next([...this.posts]);
   }
 
-  getPostUpdateListener(){
+  getPostUpdateListener() {
     return this.postUpdated.asObservable();
   }
 }
