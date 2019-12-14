@@ -1,4 +1,4 @@
-<textarea rows="{{ rowSize }}"></textarea>
+<textarea rows="{{ rowSize }}"  #postInput></textarea>
 <hr>
-<button (click)="onAddPost()">Save Post</button>
+<button (click)="onAddPost(postInput)">Save Post</button>
 <p>{{ newPost }}</p>
