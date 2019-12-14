@@ -7,4 +7,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'mean-course';
+
+  sharedPosts = [];
+
+  onPostAdded(post){
+    this.sharedPosts.push(post);
+  }
 }

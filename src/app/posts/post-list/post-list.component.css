@@ -6,3 +6,7 @@
 mat-expansion-panel{
   background-color: lightyellow;
 }
+
+.info-text{
+  text-align: center;
+}
