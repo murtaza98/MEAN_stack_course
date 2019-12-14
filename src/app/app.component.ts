@@ -11,7 +11,7 @@ export class AppComponent {
 
   sharedPosts: Post[] = [];
 
-  onPostAdded(post){
+  onPostAdded(post) {
     this.sharedPosts.push(post);
   }
 }
