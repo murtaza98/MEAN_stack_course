@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class PostCreateComponent {
   enteredValue = '';
   newPost = 'NO CONTENT';
-  rowSize = '10';
+  rowSize = '3';
   onAddPost() {
     this.newPost = this.enteredValue;
   }
