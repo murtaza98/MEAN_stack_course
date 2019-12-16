@@ -9,7 +9,7 @@ import { PostsService } from '../posts.service';
   styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent {
-  rowSize = '3';
+  rowSize = '1';
 
   enteredTitle = '';
   enteredContent = '';
