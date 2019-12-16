@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -14,6 +15,17 @@ app.use((req, res, next) => {
     'GET, POST, OPTIONS, DELETE, PATCH'
   );
   next();
+});
+
+// to parser post request data
+app.use(bodyParser.json());
+
+app.post('/api/posts', (req, res, next) => {
+  const post = req.body;
+  console.log(post);
+  res.status(201).json({
+    message: "Success! Post Added"
+  });
 });
 
 app.use('/api/posts', (req, res, next) => {
