@@ -2,6 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
+const posts = [
+  {id: 1, title: "1 title", content: "1 content"},
+  {id: 1, title: "2 title", content: "2 content"},
+  {id: 1, title: "3 title", content: "3 content"}
+];
 
 // to handle CORS
 app.use((req, res, next) => {
@@ -22,6 +27,7 @@ app.use(bodyParser.json());
 
 app.post('/api/posts', (req, res, next) => {
   const post = req.body;
+  posts.push(post);
   console.log(post);
   res.status(201).json({
     message: "Success! Post Added"
@@ -29,11 +35,6 @@ app.post('/api/posts', (req, res, next) => {
 });
 
 app.use('/api/posts', (req, res, next) => {
-  posts = [
-    {id: 1, title: "1 title", content: "1 content"},
-    {id: 1, title: "2 title", content: "2 content"},
-    {id: 1, title: "3 title", content: "3 content"}
-  ];
   res.status(200).json({
     message: 'Success',
     posts: posts
