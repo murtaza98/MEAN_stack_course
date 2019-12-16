@@ -24,10 +24,15 @@ export class PostCreateComponent {
       return;
     }
     const post: Post = {
+      id: this.getRandomId(),
       title: form.value.title,
       content: form.value.content
     };
     this.postsService.addPosts(post);
     form.resetForm();
+  }
+
+  getRandomId() {
+    return String(Math.floor(Math.random() * 100000) + 1);
   }
 }
