@@ -34,9 +34,10 @@ export class PostsService {
   }
 
   addPosts(post: Post) {
-    this.httpClient.post<{message: string}>('http://localhost:3000/api/posts', post)
+    this.httpClient.post<{message: string, addedPostId: any}>('http://localhost:3000/api/posts', post)
       .subscribe((responseData) => {
         console.log(responseData.message);
+        post.id = responseData.addedPostId;
         this.posts.push(post);
         this.postUpdated.next([...this.posts]);
       });
@@ -44,5 +45,16 @@ export class PostsService {
 
   getPostUpdateListener() {
     return this.postUpdated.asObservable();
+  }
+
+  deletePost(id: string){
+    this.httpClient.delete('http://localhost:3000/api/posts/' + id)
+      .subscribe((responseData: any) => {
+        console.log(responseData.message);
+        // remove this post from frontend
+        const updatedPost = this.posts.filter(post => post.id !== id);
+        this.posts = updatedPost;
+        this.postUpdated.next([...this.posts]);
+      });
   }
 }
