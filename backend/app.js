@@ -1,12 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const Post = require('./models/post');
 
 const app = express();
-const posts = [
-  {id: 1, title: "1 title", content: "1 content"},
-  {id: 1, title: "2 title", content: "2 content"},
-  {id: 1, title: "3 title", content: "3 content"}
-];
+
+// connect to remote server
+mongoose.connect('mongodb+srv://max:BTtYwkIZe6n4dKvQ@mean-course-7efsh.mongodb.net/node-angular?retryWrites=true&w=majority')
+  .then(()=>{
+    console.log('connected to DB');
+  })
+  .catch(()=>{
+    console.log('Connection Failed');
+  });
 
 // to handle CORS
 app.use((req, res, next) => {
@@ -26,8 +33,11 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.post('/api/posts', (req, res, next) => {
-  const post = req.body;
-  posts.push(post);
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
+  post.save();
   console.log(post);
   res.status(201).json({
     message: "Success! Post Added"
@@ -35,10 +45,17 @@ app.post('/api/posts', (req, res, next) => {
 });
 
 app.use('/api/posts', (req, res, next) => {
-  res.status(200).json({
-    message: 'Success',
-    posts: posts
-  });
+  Post.find()
+    .then(documents => {
+      console.log(documents);
+      res.status(200).json({
+        message: 'Success',
+        posts: documents
+      });
+    })
+    .catch(error=>{
+      console.log('Error Occured while fetching data');
+    });
 });
 
 // export this app
