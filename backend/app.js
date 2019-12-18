@@ -38,7 +38,7 @@ app.post('/api/posts', (req, res, next) => {
     content: req.body.content
   });
   post.save();
-  console.log(post);
+  // console.log(post);
   res.status(201).json({
     message: "Success! Post Added"
   });
@@ -47,7 +47,7 @@ app.post('/api/posts', (req, res, next) => {
 app.use('/api/posts', (req, res, next) => {
   Post.find()
     .then(documents => {
-      console.log(documents);
+      // console.log(documents);
       res.status(200).json({
         message: 'Success',
         posts: documents
