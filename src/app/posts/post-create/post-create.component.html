@@ -1,5 +1,5 @@
 <mat-card>
-  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <form (submit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
       <input matInput type="Text" name="title" [ngModel]="post.title" required #title="ngModel" placeholder="Post Title">
       <mat-error *ngIf="title.invalid">This field cannot be empty</mat-error>

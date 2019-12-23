@@ -47,6 +47,18 @@ export class PostsService {
       });
   }
 
+  updatePost(id: string, post: Post) {
+    this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, post)
+      .subscribe(responseData => {
+        console.log(responseData);
+        const updatedPost = this.posts.filter(p => p.id !== id);
+        updatedPost.push(post);
+
+        this.posts = updatedPost;
+        this.postUpdated.next(updatedPost);
+      });
+  }
+
   getPostUpdateListener() {
     return this.postUpdated.asObservable();
   }

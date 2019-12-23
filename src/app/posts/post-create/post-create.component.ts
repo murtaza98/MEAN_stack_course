@@ -36,17 +36,27 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  onAddPost(form: NgForm) {
+  onSavePost(form: NgForm) {
     if (form.invalid) {
       return;
     }
-    const post: Post = {
-      id: this.getRandomId(),
-      title: form.value.title,
-      content: form.value.content
-    };
-    this.postsService.addPosts(post);
-    form.resetForm();
+    switch(this.mode) {
+      case 'create':
+        const newPost: Post = {
+          id: this.getRandomId(),
+          title: form.value.title,
+          content: form.value.content
+        };
+        this.postsService.addPosts(newPost);
+        form.resetForm();
+        break;
+      case 'edit':
+        this.post.title = form.value.title;
+        this.post.content = form.value.content;
+        this.postsService.updatePost(this.postId, this.post);
+        form.resetForm();
+        break;
+    }
   }
 
   getRandomId() {
