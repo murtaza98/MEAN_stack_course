@@ -18,6 +18,7 @@ export class PostCreateComponent implements OnInit {
   private mode = 'create';
   private postId: string;
   post: Post;
+  isLoading = false;    // to control spinner
 
   constructor(postsService: PostsService, public route: ActivatedRoute) {
     this.postsService = postsService;
@@ -28,8 +29,10 @@ export class PostCreateComponent implements OnInit {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
+        this.isLoading = true;
         this.postsService.getPost(this.postId)
           .subscribe(postData => {
+            this.isLoading = false;
             this.post = {id: postData._id, title: postData.title, content: postData.content};
           });
       } else {
@@ -43,19 +46,21 @@ export class PostCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    switch(this.mode) {
+    switch (this.mode) {
       case 'create':
         const newPost: Post = {
           id: this.getRandomId(),
           title: form.value.title,
           content: form.value.content
         };
+        this.isLoading = true;
         this.postsService.addPosts(newPost);
         form.resetForm();
         break;
       case 'edit':
         this.post.title = form.value.title;
         this.post.content = form.value.content;
+        this.isLoading = true;
         this.postsService.updatePost(this.postId, this.post);
         form.resetForm();
         break;

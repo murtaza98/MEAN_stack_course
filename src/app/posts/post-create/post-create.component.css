@@ -7,3 +7,7 @@ mat-card{
   margin-top: 32px;
   background-color:lightyellow;
 }
+
+mat-spinner {
+  margin: auto;
+}

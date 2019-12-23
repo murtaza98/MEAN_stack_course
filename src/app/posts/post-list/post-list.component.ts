@@ -14,20 +14,24 @@ export class PostListComponent implements OnInit, OnDestroy {
   postsService: PostsService;
   private postsSubs: Subscription;
 
+  isLoading = false;      // to control spinner
+
   constructor(postsService: PostsService) {
     this.postsService = postsService;
   }
 
   ngOnInit() {
     this.postsService.getPosts();
+    this.isLoading = true;
     this.postsSubs = this.postsService.getPostUpdateListener().subscribe(
       (posts) => {
         this.posts = posts;
+        this.isLoading = false;
       }
     );
   }
 
-  onDelete(id: string){
+  onDelete(id: string) {
     this.postsService.deletePost(id);
   }
 
