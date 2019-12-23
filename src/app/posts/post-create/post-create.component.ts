@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { Post } from '../post.model';
 import { NgForm } from '@angular/forms';
 import { PostsService } from '../posts.service';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-post-create',
@@ -19,7 +19,7 @@ export class PostCreateComponent implements OnInit {
   private postId: string;
   post: Post;
 
-  constructor(postsService: PostsService, public route: ActivatedRoute, private router: Router) {
+  constructor(postsService: PostsService, public route: ActivatedRoute) {
     this.postsService = postsService;
   }
 
@@ -58,7 +58,6 @@ export class PostCreateComponent implements OnInit {
         this.post.content = form.value.content;
         this.postsService.updatePost(this.postId, this.post);
         form.resetForm();
-        this.router.navigate(['/']);
         break;
     }
   }
