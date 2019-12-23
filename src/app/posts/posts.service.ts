@@ -33,6 +33,10 @@ export class PostsService {
       });
   }
 
+  getPost(id: string){
+    return {...this.posts.find(p => p.id === id)};
+  }
+
   addPosts(post: Post) {
     this.httpClient.post<{message: string, addedPostId: any}>('http://localhost:3000/api/posts', post)
       .subscribe((responseData) => {
