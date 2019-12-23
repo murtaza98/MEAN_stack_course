@@ -1,12 +1,12 @@
 <mat-card>
   <form (submit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
-      <input matInput type="Text" name="title" [ngModel]="post.title" required #title="ngModel" placeholder="Post Title">
+      <input matInput type="Text" name="title" [ngModel]="post?.title" required #title="ngModel" placeholder="Post Title">
       <mat-error *ngIf="title.invalid">This field cannot be empty</mat-error>
     </mat-form-field>
     <mat-form-field>
       <textarea matInput rows="{{ rowSize }}" name="content"
-        [ngModel]="post.content" required #content="ngModel" placeholder="Post Content">
+        [ngModel]="post?.content" required #content="ngModel" placeholder="Post Content">
       </textarea>
       <mat-error *ngIf="content.invalid">This field cannot be empty</mat-error>
     </mat-form-field>

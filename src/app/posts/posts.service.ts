@@ -33,8 +33,9 @@ export class PostsService {
       });
   }
 
-  getPost(id: string){
-    return {...this.posts.find(p => p.id === id)};
+  getPost(id: string) {
+    // return an observable, which the calling component can subscribe
+    return this.httpClient.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
   }
 
   addPosts(post: Post) {
