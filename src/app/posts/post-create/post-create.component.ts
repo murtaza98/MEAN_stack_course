@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { Post } from '../post.model';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
@@ -20,11 +20,24 @@ export class PostCreateComponent implements OnInit {
   post: Post;
   isLoading = false;    // to control spinner
 
+  form: FormGroup;
+
+
   constructor(postsService: PostsService, public route: ActivatedRoute) {
     this.postsService = postsService;
   }
 
   ngOnInit() {
+    this.form = new FormGroup({
+      'title': new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)]
+      }),
+      'content': new FormControl(null, {
+        validators: [Validators.required]
+      })
+    });
+
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
@@ -34,6 +47,7 @@ export class PostCreateComponent implements OnInit {
           .subscribe(postData => {
             this.isLoading = false;
             this.post = {id: postData._id, title: postData.title, content: postData.content};
+            this.form.setValue({'title': this.post.title, 'content': this.post.content});
           });
       } else {
         this.mode = 'create';
@@ -42,27 +56,27 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  onSavePost(form: NgForm) {
-    if (form.invalid) {
+  onSavePost() {
+    if (this.form.invalid) {
       return;
     }
     switch (this.mode) {
       case 'create':
         const newPost: Post = {
           id: this.getRandomId(),
-          title: form.value.title,
-          content: form.value.content
+          title: this.form.value.title,
+          content: this.form.value.content
         };
         this.isLoading = true;
         this.postsService.addPosts(newPost);
-        form.resetForm();
+        this.form.reset();
         break;
       case 'edit':
-        this.post.title = form.value.title;
-        this.post.content = form.value.content;
+        this.post.title = this.form.value.title;
+        this.post.content = this.form.value.content;
         this.isLoading = true;
         this.postsService.updatePost(this.postId, this.post);
-        form.resetForm();
+        this.form.reset();
         break;
     }
   }
