@@ -1,7 +1,7 @@
 import { Post } from './post.model';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
@@ -58,18 +58,61 @@ export class PostsService {
       });
   }
 
-  updatePost(id: string, post: Post) {
-    this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, post)
+  updatePost(id: string, post: Post, image: File | string) {
+    if (typeof(image) === 'object') {
+      // FILE
+      const postData = new FormData();
+      postData.append('id', id);
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', image, post.title);
+      postData.forEach((value, key) => {
+            console.log(key + '  ' + value);
+      });
+      const headers = new HttpHeaders();
+      headers.append('Content-Type', 'multipart/form-data');
+      headers.append('Accept', 'application/json');
+      this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, postData, {headers: headers})
       .subscribe(responseData => {
         console.log(responseData);
-        const updatedPost = this.posts.filter(p => p.id !== id);
-        updatedPost.push(post);
+        const updatedPosts = this.posts.filter(p => p.id !== id);
 
-        this.posts = updatedPost;
-        this.postUpdated.next(updatedPost);
+        // update image path url
+        // post.imagePath = responseData.imagePath;
+
+        updatedPosts.push(post);
+
+        this.posts = updatedPosts;
+        this.postUpdated.next(updatedPosts);
 
         this.router.navigate(['/']);
       });
+    } else {
+      // string
+      const postData = {
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          imagePath: image
+      };
+      this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, postData)
+      .subscribe(responseData => {
+        console.log(responseData);
+        const updatedPosts = this.posts.filter(p => p.id !== id);
+
+        // update image path url
+        // post.imagePath = responseData.imagePath;
+
+        updatedPosts.push(post);
+
+        this.posts = updatedPosts;
+        this.postUpdated.next(updatedPosts);
+
+        this.router.navigate(['/']);
+      });
+    }
+
+
   }
 
   getPostUpdateListener() {
