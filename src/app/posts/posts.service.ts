@@ -24,7 +24,8 @@ export class PostsService {
           return {
             title: post.title,
             content: post.content,
-            id: post._id
+            id: post._id,
+            imagePath: post.imagePath
           };
         });
       }))
@@ -36,7 +37,7 @@ export class PostsService {
 
   getPost(id: string) {
     // return an observable, which the calling component can subscribe
-    return this.httpClient.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
+    return this.httpClient.get<{_id: string, title: string, content: string, imagePath: string}>('http://localhost:3000/api/posts/' + id);
   }
 
   addPosts(post: Post, image: File) {
@@ -46,10 +47,11 @@ export class PostsService {
     postData.append('content', post.content);
     postData.append('image', image, post.title);
 
-    this.httpClient.post<{message: string, addedPostId: any}>('http://localhost:3000/api/posts', postData)
+    this.httpClient.post<{message: string, post: any}>('http://localhost:3000/api/posts', postData)
       .subscribe((responseData) => {
         console.log(responseData.message);
-        post.id = responseData.addedPostId;
+        post.id = responseData.post.id;
+        post.imagePath = responseData.post.imagePath;
         this.posts.push(post);
         this.postUpdated.next([...this.posts]);
         this.router.navigate(['/']);

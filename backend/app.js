@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const postsRoutes = require('./routes/posts');
 
@@ -34,6 +35,9 @@ app.use(bodyParser.json());
 
 // posts routes
 app.use("/api/posts", postsRoutes);
+
+// give access images folder
+app.use("/images", express.static(path.join('backend/images')));
 
 // export this app
 module.exports = app;
