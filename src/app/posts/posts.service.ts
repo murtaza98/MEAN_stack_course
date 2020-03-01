@@ -39,8 +39,14 @@ export class PostsService {
     return this.httpClient.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
   }
 
-  addPosts(post: Post) {
-    this.httpClient.post<{message: string, addedPostId: any}>('http://localhost:3000/api/posts', post)
+  addPosts(post: Post, image: File) {
+
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', image, post.title);
+
+    this.httpClient.post<{message: string, addedPostId: any}>('http://localhost:3000/api/posts', postData)
       .subscribe((responseData) => {
         console.log(responseData.message);
         post.id = responseData.addedPostId;

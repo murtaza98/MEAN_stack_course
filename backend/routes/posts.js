@@ -16,7 +16,10 @@ const storage = multer.diskStorage({
     const isValid = MIME_TYPE_MAP[file.mimetype];
     let error = new Error("Invalid mime type");
     if(isValid){
+      console.log("image valid");
       error = null;
+    }else{
+      console.log("image invalid");
     }
     cb(error, 'backend/images');
   },
@@ -28,7 +31,7 @@ const storage = multer.diskStorage({
 });
 
 // "image" is the name of property in form at frontend
-router.post('', multer(storage).single("image"), (req, res, next) => {
+router.post('', multer({storage: storage}).single("image"), (req, res, next) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content

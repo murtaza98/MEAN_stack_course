@@ -74,7 +74,7 @@ export class PostCreateComponent implements OnInit {
           content: this.form.value.content
         };
         this.isLoading = true;
-        this.postsService.addPosts(newPost);
+        this.postsService.addPosts(newPost, this.form.value.image);
         this.form.reset();
         break;
       case 'edit':
