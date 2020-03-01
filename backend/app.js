@@ -7,7 +7,7 @@ const postsRoutes = require('./routes/posts');
 const app = express();
 
 // connect to remote server
-mongoose.connect('mongodb+srv://max:BTtYwkIZe6n4dKvQ@mean-course-7efsh.mongodb.net/node-angular?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://max:BTtYwkIZe6n4dKvQ@mean-course-7efsh.mongodb.net/node-angular?retryWrites=true&w=majority', { useNewUrlParser: true })
   .then(()=>{
     console.log('connected to DB');
   })
