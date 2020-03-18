@@ -3,6 +3,7 @@ import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-post-list',
@@ -14,7 +15,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   postsService: PostsService;
   private postsSubs: Subscription;
+  private authListenerSubs: Subscription;
 
+  userIsAuthenticated = false;
   isLoading = false;      // to control spinner
 
   // Pagination settings
@@ -23,7 +26,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
 
-  constructor(postsService: PostsService) {
+  constructor(postsService: PostsService, private authService: AuthService) {
     this.postsService = postsService;
   }
 
@@ -37,6 +40,11 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     );
+    this.userIsAuthenticated = this.authService.getAuthStatus();
+    this.authListenerSubs = this.authService.getAuthStatusListener()
+      .subscribe(isAuthenticated => {
+        this.userIsAuthenticated = isAuthenticated;
+      });
   }
 
   onDelete(id: string) {
