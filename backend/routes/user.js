@@ -66,7 +66,8 @@ router.post('/login', (req, res, next) => {
       );
       // send jwt token to client
       res.status(200).json({
-        token: token
+        token: token,
+        expiresIn: 3600
       });
     })
     .catch(err => {
