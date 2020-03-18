@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -26,6 +27,54 @@ router.post("/signup", (req, res, next) => {
           });
         });
     });
+});
+
+router.post('login', (req, res, next) => {
+  // ----- info -----
+  // auth in Single Page Apps is different from auth in other full stack websites
+  // over here instead of creating session, a server will generate a JWT (json web token) and send this to client
+  // the client will then send this jwt with all its future HTTP requests
+  // ----- end info ------
+
+
+  // check if email is present in db
+  User.findOne({ email: req.body.email })
+    .then(user => {
+      if (!user) {
+        // email not found in DB
+        return res.status(401).json({
+          message: 'Email not found'
+        });
+      }
+      // email found, now check if password is same
+      return bcrypt.compare(req.body.password, user.password);
+    })
+    .then(result => {
+      if (!result) {
+        // password doesn't match
+        return res.status(401).json({
+          message: 'Password is Incorrect'
+        })
+
+        // email and password verified
+        // create a jwt
+        const token = jwt.sign({email: user.email, userId: user._id},
+                        'some_server_secret',
+                        {expiresIn: '1h'}
+                      );
+        // send jwt token to client
+        res.status(200).json({
+          token: token
+        });
+      }
+    })
+    .catch(err => {
+      return res.status(401).json({
+        message: 'Authentication Failed'
+      })
+    });
+
+
 });
 
 
