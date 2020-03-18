@@ -15,9 +15,10 @@ export class PostsService {
     this.httpClient = httpClient;
   }
 
-  getPosts() {
+  getPosts(postsPerPage: number, currentPage: number) {
+    const queryParams = `?pageSize=${postsPerPage}&page=${currentPage}`;
     this.httpClient
-      .get<{message: string, posts: any}>('http://localhost:3000/api/posts')
+      .get<{message: string, posts: any}>('http://localhost:3000/api/posts' + queryParams)
       // mapping _id from backend to id in frontend
       .pipe(map((postData) => {
         return postData.posts.map(post => {
