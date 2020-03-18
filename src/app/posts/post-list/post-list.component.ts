@@ -56,6 +56,6 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.currentPage = pageData.pageIndex + 1;    // +1 bcs in angular pages are 0th index while at backend it is 1 based indexed
     this.postsPerPage = pageData.pageSize;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
-    console.log(pageData);
+    // console.log(pageData);
   }
 }
