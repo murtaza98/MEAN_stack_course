@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 
 const postsRoutes = require('./routes/posts');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.use(bodyParser.json());
 
 // posts routes
 app.use("/api/posts", postsRoutes);
+
+// user routes
+app.use("/api/user", userRoutes);
 
 // give access images folder
 app.use("/images", express.static(path.join('backend/images')));
