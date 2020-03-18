@@ -18,7 +18,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   isLoading = false;      // to control spinner
 
   // Pagination settings
-  totalPost = 10;
+  totalPost = 0;
   postsPerPage = 2;
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
@@ -31,15 +31,20 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
     this.isLoading = true;
     this.postsSubs = this.postsService.getPostUpdateListener().subscribe(
-      (posts) => {
-        this.posts = posts;
+      (postData: {posts: Post[], postCount: number}) => {
+        this.posts = postData.posts;
+        this.totalPost = postData.postCount;
         this.isLoading = false;
       }
     );
   }
 
   onDelete(id: string) {
-    this.postsService.deletePost(id);
+    this.isLoading = true;
+    this.postsService.deletePost(id).subscribe(() => {
+      this.currentPage = 1;
+      this.postsService.getPosts(this.postsPerPage, this.currentPage);
+    });
   }
 
   ngOnDestroy() {
@@ -47,6 +52,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   onChangedPage(pageData: PageEvent) {
+    this.isLoading = true;
     this.currentPage = pageData.pageIndex + 1;    // +1 bcs in angular pages are 0th index while at backend it is 1 based indexed
     this.postsPerPage = pageData.pageSize;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);

@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Injectable({ providedIn: 'root'})
 export class PostsService {
   private posts: Post[] = [];
-  private postUpdated = new Subject<Post[]>();
+  private postUpdated = new Subject<{posts: Post[], postCount: number}>();
   private httpClient: HttpClient;
 
   constructor(httpClient: HttpClient, private router: Router) {
@@ -18,21 +18,27 @@ export class PostsService {
   getPosts(postsPerPage: number, currentPage: number) {
     const queryParams = `?pageSize=${postsPerPage}&page=${currentPage}`;
     this.httpClient
-      .get<{message: string, posts: any}>('http://localhost:3000/api/posts' + queryParams)
+      .get<{message: string, posts: any, maxPosts: number}>('http://localhost:3000/api/posts' + queryParams)
       // mapping _id from backend to id in frontend
       .pipe(map((postData) => {
-        return postData.posts.map(post => {
-          return {
-            title: post.title,
-            content: post.content,
-            id: post._id,
-            imagePath: post.imagePath
-          };
-        });
+        return {
+          posts: postData.posts.map(post => {
+            return {
+              title: post.title,
+              content: post.content,
+              id: post._id,
+              imagePath: post.imagePath
+            };
+            }),
+            maxPosts: postData.maxPosts
+        };
       }))
       .subscribe((transformedPostData) => {
-        this.posts = transformedPostData;
-        this.postUpdated.next([...this.posts]);
+        this.posts = transformedPostData.posts;
+        this.postUpdated.next({
+          posts: [...this.posts],
+          postCount: transformedPostData.maxPosts
+        });
       });
   }
 
@@ -51,10 +57,8 @@ export class PostsService {
     this.httpClient.post<{message: string, post: any}>('http://localhost:3000/api/posts', postData)
       .subscribe((responseData) => {
         console.log(responseData.message);
-        post.id = responseData.post.id;
-        post.imagePath = responseData.post.imagePath;
-        this.posts.push(post);
-        this.postUpdated.next([...this.posts]);
+        // no need to add posts in posts array, since if we navigate to index page, the ngOnInit will
+        // automatically reload all posts
         this.router.navigate(['/']);
       });
   }
@@ -76,16 +80,8 @@ export class PostsService {
       this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, postData, {headers: headers})
       .subscribe(responseData => {
         console.log(responseData);
-        const updatedPosts = this.posts.filter(p => p.id !== id);
-
-        // update image path url
-        // post.imagePath = responseData.imagePath;
-
-        updatedPosts.push(post);
-
-        this.posts = updatedPosts;
-        this.postUpdated.next(updatedPosts);
-
+        // no need to update post in posts array, since if we navigate to index page, the ngOnInit will
+        // automatically reload all posts
         this.router.navigate(['/']);
       });
     } else {
@@ -99,16 +95,8 @@ export class PostsService {
       this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, postData)
       .subscribe(responseData => {
         console.log(responseData);
-        const updatedPosts = this.posts.filter(p => p.id !== id);
-
-        // update image path url
-        // post.imagePath = responseData.imagePath;
-
-        updatedPosts.push(post);
-
-        this.posts = updatedPosts;
-        this.postUpdated.next(updatedPosts);
-
+        // no need to update post in posts array, since if we navigate to index page, the ngOnInit will
+        // automatically reload all posts
         this.router.navigate(['/']);
       });
     }
@@ -121,13 +109,6 @@ export class PostsService {
   }
 
   deletePost(id: string){
-    this.httpClient.delete('http://localhost:3000/api/posts/' + id)
-      .subscribe((responseData: any) => {
-        console.log(responseData.message);
-        // remove this post from frontend
-        const updatedPost = this.posts.filter(post => post.id !== id);
-        this.posts = updatedPost;
-        this.postUpdated.next([...this.posts]);
-      });
+    return this.httpClient.delete('http://localhost:3000/api/posts/' + id);
   }
 }
