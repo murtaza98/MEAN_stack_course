@@ -78,7 +78,19 @@ router.put('/:id',  multer({storage: storage}).single("image"), (req, res, next)
 });
 
 router.get('', (req, res, next) => {
-  Post.find()
+  const pageSize = Number(req.query.pageSize);
+  const currrentPage = Number(req.query.page);
+  const postQuery = Post.find();
+
+  if(pageSize && currrentPage){
+    // eg:- GET request
+    // http://localhost:3000/api/posts?pageSize=2&currentPage=1
+    postQuery
+      .skip(pageSize * (currrentPage - 1))
+      .limit(pageSize);
+  }
+
+  postQuery.find()
     .then(documents => {
       // console.log(documents);
       res.status(200).json({
