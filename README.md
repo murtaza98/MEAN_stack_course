@@ -2,12 +2,18 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
 
-## Development server
+## Installtion
+
+Change to the root directory and run `npm install`
+
+## Usage
+
+### Start Angular Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 
-## To Start Server
+### To Start Backend Server
 Run `npm run start:server` </br>
 using this the node server will automatically restart with file changes.
 
