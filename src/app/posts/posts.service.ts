@@ -46,7 +46,7 @@ export class PostsService {
 
   getPost(id: string) {
     // return an observable, which the calling component can subscribe
-    return this.httpClient.get<{_id: string, title: string, content: string, imagePath: string}>('http://localhost:3000/api/posts/' + id);
+    return this.httpClient.get<{_id: string, title: string, content: string, imagePath: string, creator: string}>('http://localhost:3000/api/posts/' + id);
   }
 
   addPosts(post: Post, image: File) {
@@ -88,11 +88,12 @@ export class PostsService {
       });
     } else {
       // string
-      const postData = {
+      const postData: Post = {
           id: post.id,
           title: post.title,
           content: post.content,
-          imagePath: image
+          imagePath: image,
+          creator: null
       };
       this.httpClient.put<{message: string}>('http://localhost:3000/api/posts/' + id, postData)
       .subscribe(responseData => {
