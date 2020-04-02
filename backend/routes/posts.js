@@ -39,7 +39,8 @@ router.post('', checkAuth, multer({storage: storage}).single("image"), (req, res
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + "/images/" + req.file.filename
+    imagePath: url + "/images/" + req.file.filename,
+    creator: req.userData.userId,
   });
   // console.log(post.imagePath);
   post.save().then(createdPost => {
@@ -49,7 +50,8 @@ router.post('', checkAuth, multer({storage: storage}).single("image"), (req, res
         id: createdPost._id,
         title: createdPost.title,
         content: createdPost.content,
-        imagePath: createdPost.imagePath
+        imagePath: createdPost.imagePath,
+        creator: createdPost.userId,
       }
     });
   });

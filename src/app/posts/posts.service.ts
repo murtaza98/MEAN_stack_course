@@ -27,13 +27,15 @@ export class PostsService {
               title: post.title,
               content: post.content,
               id: post._id,
-              imagePath: post.imagePath
+              imagePath: post.imagePath,
+              creator: post.creator
             };
             }),
             maxPosts: postData.maxPosts
         };
       }))
       .subscribe((transformedPostData) => {
+        console.log(transformedPostData.posts);
         this.posts = transformedPostData.posts;
         this.postUpdated.next({
           posts: [...this.posts],

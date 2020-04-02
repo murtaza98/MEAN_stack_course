@@ -5,7 +5,8 @@ module.exports = (req, res, next) => {
   // Bearer jwt_token_will_be_here
   try {
     const token = req.headers.authorization.split(" ")[1];
-    jwt.verify(token, 'some_server_secret'); // verify will throw an expection if token is not valid
+    const decodedToken =  jwt.verify(token, 'some_server_secret'); // verify will throw an expection if token is not valid
+    req.userData = { email: decodedToken.email, userId: decodedToken.userId };
     next();
   } catch (error) {
     return res.status(401).json({
