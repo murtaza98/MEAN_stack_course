@@ -72,13 +72,22 @@ router.put('/:id', checkAuth, multer({storage: storage}).single("image"), (req, 
     imagePath: imagePath
   });
   // console.log(post);
-  Post.updateOne({_id: req.params.id}, post)
+  Post.updateOne({_id: req.params.id, creator: req.userData.userId}, post)
     .then(result => {
       // console.log(result);
-      console.log('Post Updated');
-      res.status(200).json({
-        message: "Success! Post updated"
-      });
+      if( result.nModified > 0 ) {
+        // we updated post, i.e user is authorized to update post
+        console.log('Post Updated');
+        res.status(200).json({
+          message: "Success! Post updated"
+        });
+      } else {
+        // post not updated, i.e user is not authorized to update post
+        console.log('User not authorized!');
+        res.status(401).json({
+          message: "User not Authorized"
+        });
+      }
     });
 });
 
@@ -128,16 +137,25 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', checkAuth, (req, res, next) => {
-  Post.deleteOne({_id: req.params.id})
+  Post.deleteOne({_id: req.params.id, creator: req.userData.userId})
     .then(result => {
-      console.log('Post Deleted');
+      if( result.n > 0 ) {
+        // we updated post, i.e user is authorized to update post
+        console.log('Post Deleted');
+        res.status(200).json({
+          message: "Success! Post deleted"
+        });
+      } else {
+        // post not updated, i.e user is not authorized to update post
+        console.log('User not authorized!');
+        res.status(401).json({
+          message: "User not Authorized"
+        });
+      }
     })
     .catch(error => {
       console.log('Error occured while deleting post\n' + error);
     });
-  res.status(200).json({
-    message: 'Post deleted'
-  });
 });
 
 
